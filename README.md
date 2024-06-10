@@ -18,3 +18,7 @@ To launch the Docker Container
 ````bash
 $ docker run -it --rm -p 8888:8888 --gpus all -v $(pwd):/tf tf-gpu-jupyter 
 ````
+
+# Preview of Failures
+
+![image](./plots/incorrectly_classified_images.png)
