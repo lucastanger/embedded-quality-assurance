@@ -18,11 +18,12 @@ from lib.TFLiteModel import TFLiteModel
 from lib.ObjectDetector import ObjectDetector
 
 #define positions
-position_camera = 130
-position_white  = 100
-position_red    = 165
-position_blue   = 250
-position_fail   = 350
+MovementSpeed = min(max(300, 1), 512)
+position_camera = 105
+position_white  = 195 
+position_red    = 280
+position_blue   = 360
+position_fail   = 443
 led.set_brightness(int(0))
 
 
@@ -79,36 +80,36 @@ def eject_fail():
 
 #drive to positon
 def drive_to_position(position):
-    print('moving')
-    motor.set_speed(160, Motor.CCW)
-    motor.set_distance(position)
+    print("Drive to position: ", position)
+    print("Counter: ", TXT_SLD_M_C1_motor_step_counter.get_count())
+    SetBeltSpeedSteps(MovementSpeed, (position - position_camera) - (TXT_SLD_M_C1_motor_step_counter.get_count()))
     AwaitBeltToReachPosition()
 
 def AwaitBeltToReachPosition():
-    global BeltSpeed, BeltSteps, MovementSpeed, PositionBay1, PositionBay2, j, PositionBay3, i, state_code, PositionBay4, PositionCamera, dubblepart, num
     while True:
         if (not motor.is_running()):
             break
         time.sleep(0.010)
 
 def SetBeltSpeedSteps(BeltSpeed, BeltSteps):
-    global MovementSpeed, PositionBay1, PositionBay2, j, PositionBay3, i, state_code, PositionBay4, PositionCamera, dubblepart, num
     if BeltSteps < 0:
-        TXT_SLD_M_M1_encodermotor.set_speed(int(BeltSpeed), Motor.CW)
-        TXT_SLD_M_M1_encodermotor.set_distance(int(BeltSteps * -1))
+        motor.set_speed(int(BeltSpeed), Motor.CW)
+        motor.set_distance(int(BeltSteps * -1))
     else:
-        TXT_SLD_M_M1_encodermotor.set_speed(int(BeltSpeed), Motor.CCW)
-        TXT_SLD_M_M1_encodermotor.set_distance(int(BeltSteps))
+        motor.set_speed(int(BeltSpeed), Motor.CCW)
+        motor.set_distance(int(BeltSteps))
 
 
 #define take picture
 
 def take_picture():
     print('taking picture')
-    led.set_brightness(int(512))
-    time.sleep(0.2)
-    led.set_brightness(int(30))
-    time.sleep(0.8)
+
+    for i in range(512):
+        led.set_brightness(i)
+        time.sleep(0.001)    
+
+    time.sleep(0.5)
 
     image = camera.read_frame()
     saveFileandPublish(image)
@@ -119,7 +120,7 @@ def take_picture():
 
 def process():
     while True:
-        if(part_at_start.is_dark()):
+        if(PartInGoodsReceipt()):
 
             # Reset interface
             reset_interface()
@@ -127,8 +128,29 @@ def process():
 
             display.set_attr("part_pass_fail.text", str(containInHTML('i', 'processing')))
 
-            drive_to_position(position_camera)
+            # Move part to camera
+            motor.set_speed(int(MovementSpeed * 0.5), Motor.CCW)
+            motor.start_sync()
+            for i in range(401):
+                if not PartInGoodsReceipt():
+                    break
+                if i >= 399:
+                    motor.stop_sync()
+                    raise Exception("Insertion fault, workpiece did not clear the lightbeam in expected Time. [Trubleshoot:  Is the workpiece stuck somewhere?]")
+                time.sleep(0.01)
+            motor.stop_sync()
+
+            SetBeltSpeedSteps(MovementSpeed, position_camera)
+            AwaitBeltToReachPosition()
+
+            # Start processing
             image = take_picture()
+            prediction_image = image.copy()
+
+            TXT_SLD_M_C1_motor_step_counter.reset()
+            motor.set_speed(int(160), Motor.CCW)
+            motor.set_distance(int(300))
+            
 
             x, y, w, h = 0, 0, 0, 0
 
@@ -162,15 +184,15 @@ def process():
 
             detected_color = np.array([detected_color], dtype=np.float32)
 
-            image = cv2.resize(image, (240, 240))
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            # image = cv2.resize(image, (240, 240))
+            prediction_image = cv2.cvtColor(prediction_image, cv2.COLOR_BGR2RGB)
 
-            image = np.float32(image)
-            image = np.expand_dims(image, axis=0)
+            prediction_image = np.float32(prediction_image)
+            prediction_image = np.expand_dims(prediction_image, axis=0)
 
             # Predict result with model
             start_time = time.time()
-            result = model.predict(detected_color, image)
+            result = model.predict(detected_color, prediction_image)
             end_time = time.time()
             print(result) 
             elapsed_time = end_time - start_time
@@ -196,26 +218,28 @@ def process():
                 display.set_attr("blue.active", str(True).lower())
                 display.set_attr("part_pass_fail.text", str(containInHTML('b', "Workpiece <font color='#88ff88'> PASSED</font>")))
 
+                # SetBeltSpeedSteps(MovementSpeed, (position_blue - position_camera) - (TXT_SLD_M_C1_motor_step_counter.get_count()))
                 drive_to_position(position_blue)
                 eject_blue()
             elif result == 'fail':
                 display.set_attr("fail.active", str(True).lower())
                 display.set_attr("part_pass_fail.text", str(containInHTML('b', "Workpiece <font color='#ff8888'>FAILED</font>")))
 
+                # SetBeltSpeedSteps(MovementSpeed, (position_fail - position_camera) - (TXT_SLD_M_C1_motor_step_counter.get_count()))
                 drive_to_position(position_fail)
                 eject_fail()
             elif result == 'red':
-
                 display.set_attr("red.active", str(True).lower())
                 display.set_attr("part_pass_fail.text", str(containInHTML('b', "Workpiece <font color='#88ff88'> PASSED</font>")))
 
+                # SetBeltSpeedSteps(MovementSpeed, (position_red - position_camera) - (TXT_SLD_M_C1_motor_step_counter.get_count()))
                 drive_to_position(position_red)
                 eject_red()
             elif result == 'white':
-
                 display.set_attr("white.active", str(True).lower())
                 display.set_attr("part_pass_fail.text", str(containInHTML('b', "Workpiece <font color='#88ff88'> PASSED</font>")))
 
+                # SetBeltSpeedSteps(MovementSpeed, (position_white - position_camera) - (TXT_SLD_M_C1_motor_step_counter.get_count()))
                 drive_to_position(position_white)
                 eject_white()
 
@@ -280,3 +304,6 @@ def displayGif():
     # Display the resized image
     displaystr = "<img width='240' height='160' src='" +  imgb64  + "'>"
     display.set_attr("img_label.text", str(displaystr))
+
+def PartInGoodsReceipt():
+    return part_at_start.is_dark()
