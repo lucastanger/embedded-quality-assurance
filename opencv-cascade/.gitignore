@@ -1,0 +1,6 @@
+*.lst
+*.vec
+classifier/*
+!classifier/cascade.xml
+n/*
+p/*
