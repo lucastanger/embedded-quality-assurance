@@ -35,21 +35,19 @@ Machine learning, quality assurance, anomaly detection, manufacturing, end-of-li
 \IEEEPARstart{T}{his} paper presents a novel approach for end-of-line testing and anomaly detection in manufacturing using machine learning techniques. Quality assurance is a critical aspect of the manufacturing process, aimed at ensuring that products meet predefined standards of quality. End-of-line testing is a key component of quality assurance, involving the inspection and testing of products at the end of the production line to identify defects or anomalies. Traditional quality control methods have often relied on manual inspections and statistical process control (SPC). However, these methods can be time-consuming and prone to human error. Recent advancements in machine learning have provided more efficient and accurate alternatives for quality assurance in manufacturing.
 
 Machine learning techniques, such as convolutional neural networks (CNNs) and transfer learning, have been widely adopted in quality assurance systems to automate the inspection and testing process. CNNs are particularly well-suited for image classification tasks, making them ideal for end-of-line testing applications. Transfer learning is a machine learning technique that leverages pre-trained models to accelerate the training process and improve the model's performance on new tasks. By utilizing pre-trained models, the model can leverage the knowledge learned from a large dataset to extract relevant features from rather small input data, which can be fine-tuned to the specific task at hand.
-\section{Related Work}
+% \section{Related Work}
 
-The application of machine learning for quality assurance and anomaly detection has gained significant traction across various industries, including manufacturing. This chapter provides an overview of the existing literature and research studies that have contributed to the development and implementation of machine learning techniques in quality assurance systems, with a particular focus on end-of-line testing and anomaly detection.
+% The application of machine learning for quality assurance and anomaly detection has gained significant traction across various industries, including manufacturing. This chapter provides an overview of the existing literature and research studies that have contributed to the development and implementation of machine learning techniques in quality assurance systems, with a particular focus on end-of-line testing and anomaly detection.
 
-\subsection*{Quality Assurance in Manufacturing}
+% \subsection*{Quality Assurance in Manufacturing}
 
-Quality assurance in manufacturing involves the systematic monitoring and evaluation of various aspects of the production process to ensure that products meet predefined standards of quality. Traditional quality control methods have often relied on statistical process control (SPC) and manual inspections. However, these methods can be time-consuming and prone to human error. Recent advancements in machine learning have provided more efficient and accurate alternatives.
+% Quality assurance in manufacturing involves the systematic monitoring and evaluation of various aspects of the production process to ensure that products meet predefined standards of quality. Traditional quality control methods have often relied on statistical process control (SPC) and manual inspections. However, these methods can be time-consuming and prone to human error. Recent advancements in machine learning have provided more efficient and accurate alternatives.
 
-\subsubsection*{Anomaly Detection in Manufacturing}
+% \subsubsection*{Anomaly Detection in Manufacturing}
 
-Anomaly detection is a critical aspect of quality assurance, aimed at identifying deviations from normal operating conditions that may indicate defects or failures. Several studies have explored the use of machine learning for anomaly detection in manufacturing processes:
+% Anomaly detection is a critical aspect of quality assurance, aimed at identifying deviations from normal operating conditions that may indicate defects or failures. Several studies have explored the use of machine learning for anomaly detection in manufacturing processes:
 
-Anomaly Detection in Manufacturing Systems Using Structured Neural Networks: Liu et al. (2018) propose an innovative approach combining event ordering relationships with neural networks to enhance anomaly detection in manufacturing systems. They develop a structured neural network that incorporates the event ordering relationship before the training process, which determines important neuron connections and weight initialization. This structuring reduces network complexity and improves anomaly detection accuracy. Specifically, the structured time delay neural network (TDNN) is used for supervised learning, and a structured autoencoder is employed for unsupervised learning. Their results show a significant reduction in misclassification errors compared to traditional methods like one-class SVM and decision trees \cite{ref1}.
-
-
+% Anomaly Detection in Manufacturing Systems Using Structured Neural Networks: Liu et al. (2018) propose an innovative approach combining event ordering relationships with neural networks to enhance anomaly detection in manufacturing systems. They develop a structured neural network that incorporates the event ordering relationship before the training process, which determines important neuron connections and weight initialization. This structuring reduces network complexity and improves anomaly detection accuracy. Specifically, the structured time delay neural network (TDNN) is used for supervised learning, and a structured autoencoder is employed for unsupervised learning. Their results show a significant reduction in misclassification errors compared to traditional methods like one-class SVM and decision trees \cite{ref1}.
 
 \section{Dataset}
 
@@ -94,7 +92,7 @@ The proposed model architecture consists of two input branches: an image input b
 
 The detection of color information is crucial for the classification task, as the color of the product is a key feature for distinguishing between different classes. Thus the color was extracted from the image using an object detector, which classified the color of the product based on the HSL color space. The color information was then one-hot encoded and passed through the color input branch of the model.
 
-The model was trained using the Adam optimizer with a learning rate of $0.001$ and a batch size of $32$. The model was trained for $40$ epochs, with early stopping based on the validation loss to prevent overfitting. The model's performance was evaluated on the test dataset using metrics such as accuracy, precision, recall, and F1 score. The confusion matrix was also generated to visualize the model's performance across different classes.
+The model was trained using the Adam optimizer with a learning rate of $0.001$ and a batch size of $32$. The model was trained for $40$ epochs, with early stopping based on the validation loss to prevent overfitting. The model's performance was evaluated on the test dataset using metrics such as accuracy, precision and recall. The confusion matrix was also generated to visualize the model's performance across different classes.
 
 The model was implemented using TensorFlow and Keras, two popular deep learning frameworks that provide high-level APIs for building and training neural networks. TensorFlow is an open-source machine learning library developed by Google that provides a flexible and efficient platform for building and training machine learning models. Keras is a high-level neural networks API that runs on top of TensorFlow, making it easy to build and train deep learning models with minimal code.
 
@@ -115,7 +113,7 @@ Since the embedded system has limited computational resources, the model was opt
 
 \section{Results}
 
-The proposed model architectures achieved outstanding accuracies on the classification task, with the EfficientNetB0 model achieving an accuracy of $96.33\%$ on the test dataset and EfficientNetB0V2 achieving an accuracy of $97.18\%$. The models demonstrated high precision, recall, and F1 scores across all classes, indicating their robustness and generalizability. The confusion matrix for the better-performing EfficientNetB0V2 model is shown in Figure \ref{fig:confusion_matrix}.
+The proposed model architectures achieved outstanding accuracies on the classification task, with the EfficientNetB0 model achieving an accuracy of $96.33\%$ on the test dataset and EfficientNetB0V2 achieving an accuracy of $97.18\%$. The models demonstrated high precision and recall scores across all classes, indicating their robustness and generalizability. The confusion matrix for the better-performing EfficientNetB0V2 model is shown in Figure \ref{fig:confusion_matrix}.
 
 \begin{figure}[!h]
   \centering
@@ -142,7 +140,7 @@ The confusion matrix provides a visual representation of the model's performance
   \label{tab:recall_precision}
 \end{table}
 
-The model's performance on the embedded system was evaluated in a real-time production environment. The model successfully performed end-of-line testing and anomaly detection, providing operators with real-time feedback on the quality of the products. The model's predictions were displayed on the screen, along with the certainty of the model's prediction, allowing operators to make informed decisions about the production process. An example of the model's classification result on the embedded system is shown in Figure \ref{fig:loss_accuracy}.
+The model's performance on the embedded system was evaluated in a real-time production environment. The model successfully performed end-of-line testing and anomaly detection, providing real-time feedback on the quality of the products. The model's predictions were displayed on the screen, along with the certainty of the model's prediction, allowing operators to make informed decisions about the production process. An example of the model's classification result on the embedded system is shown in Figure \ref{fig:loss_accuracy}.
 
 \begin{figure}[!h]
   \centering
@@ -151,16 +149,13 @@ The model's performance on the embedded system was evaluated in a real-time prod
   \label{fig:loss_accuracy}
 \end{figure}
 
-
-
 \section{Conclusion and future work}
 
-In this study, we proposed a novel approach for end-of-line testing and anomaly detection in manufacturing using machine learning techniques. We developed a model architecture based on the EfficientNetB0 and EfficientNetB0V2 architectures, which achieved high accuracy on the classification task. The models were optimized for deployment on an embedded system, where they successfully performed end-of-line testing and anomaly detection in a real-time production environment.
+In this study, a novel approach for end-of-line testing and anomaly detection in manufacturing using machine learning techniques was proposed. A model architecture based on the EfficientNetB0 and EfficientNetB0V2 architectures, which achieved high accuracy on the classification task was developed. The models were optimized for deployment on an embedded system, where they successfully performed end-of-line testing and anomaly detection in a real-time production environment.
 
-The results of this study demonstrate the potential of machine learning techniques for quality assurance in manufacturing. By leveraging pre-trained models and optimizing the model architecture for inference speed and memory usage, we were able to develop a robust and efficient model for end-of-line testing and anomaly detection. The model's performance on the embedded system highlights its practical applicability in real-world scenarios. 
+The results of this study demonstrate the potential of machine learning techniques for quality assurance in manufacturing. By leveraging pre-trained models and optimizing the model architecture for inference speed and memory usage, a robust and efficient model for end-of-line testing and anomaly detection was developed. The model's performance on the embedded system highlights its practical applicability in real-world scenarios.
 
-In future work, it is possible to further optimize the model for deployment on resource-constrained devices by exploring techniques such as model quantization, pruning, and distillation. Additionally, the model could be extended to perform more complex anomaly detection tasks, such as detecting defects in different parts of the product or identifying anomalies in the production process. By continuing to explore and develop machine learning techniques for quality assurance in manufacturing, we can improve the efficiency and accuracy of production processes and ensure the delivery of high-quality products to customers.
-
+In future work, it is possible to further optimize the model for deployment on resource-constrained devices by exploring techniques such as model quantization, pruning, and distillation. Additionally, the model could be extended to perform more complex anomaly detection tasks, such as detecting defects in different parts of the product or identifying anomalies in the production process. By continuing to explore and develop machine learning techniques for quality assurance in manufacturing, the efficiency and accuracy of production processes can be improved, ensuring the delivery of high-quality products to customers.
 
 \begin{thebibliography}{1}
 \bibliographystyle{IEEEtran}
